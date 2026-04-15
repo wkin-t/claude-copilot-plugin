@@ -100,13 +100,18 @@ The caller provides a diff or code changes. Build this prompt:
 </output_format>
 ```
 
-**Invocation:**
+**Invocation (safe — avoids shell injection via temp file):**
 ```bash
-copilot -p "<constructed_prompt>" \
+_prompt_file=$(mktemp /tmp/copilot-review-XXXXXX.txt)
+cat > "$_prompt_file" << 'PROMPT_EOF'
+<constructed_prompt_here>
+PROMPT_EOF
+copilot -p "$(cat "$_prompt_file")" \
   --model gpt-5.4 \
   --effort high \
   -s --allow-all \
   [--add-dir <project_dir>]
+rm -f "$_prompt_file"
 ```
 
 Default `gpt-5.4 --effort high` for all reviews.

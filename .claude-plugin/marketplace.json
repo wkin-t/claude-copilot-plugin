@@ -1,19 +1,21 @@
 {
-  "name": "local-plugins",
+  "name": "copilot-cli-plugins",
   "owner": {
-    "name": "local"
+    "name": "wkin-t",
+    "url": "https://github.com/wkin-t"
   },
   "metadata": {
-    "description": "Local plugins for Claude Code.",
-    "version": "1.0.0"
+    "description": "Copilot CLI plugin for Claude Code — task delegation and adversarial review via GPT-5.",
+    "version": "1.0.1"
   },
   "plugins": [
     {
       "name": "copilot-cli",
-      "description": "Dispatch tasks to GitHub Copilot CLI (GPT-5/Opus) as subagents.",
-      "version": "1.0.0",
+      "description": "Dispatch tasks to GitHub Copilot CLI (GPT-5/Opus) as subagents — task delegation and adversarial review.",
+      "version": "1.0.1",
       "author": {
-        "name": "local"
+        "name": "wkin-t",
+        "url": "https://github.com/wkin-t"
       },
       "source": "./plugins/copilot-cli"
     }

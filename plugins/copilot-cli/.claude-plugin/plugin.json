@@ -1,8 +1,9 @@
 {
   "name": "copilot-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Dispatch tasks to GitHub Copilot CLI (GPT-5/Opus) as subagents — task delegation and adversarial review.",
   "author": {
-    "name": "local"
+    "name": "wkin-t",
+    "url": "https://github.com/wkin-t"
   }
 }

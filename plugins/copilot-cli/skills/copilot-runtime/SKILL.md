@@ -10,13 +10,20 @@ Use this skill only inside `copilot-cli:copilot-task` and `copilot-cli:copilot-r
 
 ## Invocation Template
 
+Always use a temporary file to pass the prompt — this avoids shell injection when file contents are embedded:
+
 ```bash
-copilot -p "<task_prompt>" \
+_prompt_file=$(mktemp /tmp/copilot-prompt-XXXXXX.txt)
+cat > "$_prompt_file" << 'PROMPT_EOF'
+<task_prompt>
+PROMPT_EOF
+copilot -p "$(cat "$_prompt_file")" \
   --model <model> \
   [--effort <effort>] \
   -s \
   --allow-all \
   [--add-dir <working_dir>]
+rm -f "$_prompt_file"
 ```
 
 ## Required Flags
@@ -24,7 +31,7 @@ copilot -p "<task_prompt>" \
 | Flag | Purpose |
 |------|---------|
 | `-s` / `--silent` | Only output model response, suppress stats |
-| `--allow-all` | Grant all permissions for non-interactive mode |
+| `--allow-all` | Grant all permissions for non-interactive mode. Grants Copilot CLI full tool access — do not use in untrusted environments |
 
 ## Model Routing
 
@@ -38,11 +45,9 @@ Default `--effort high` for all real tasks.
 
 ## Context Injection
 
-Copilot auto-loads from the working directory:
-- `./CLAUDE.md` and `./.claude/CLAUDE.md`
-- `./AGENTS.md`
+> ⚠️ **Privacy notice**: Copilot CLI auto-loads `./CLAUDE.md` and `./.claude/CLAUDE.md` from the working directory and sends them to GitHub Copilot (Microsoft/OpenAI servers). If your CLAUDE.md contains internal system prompts, proprietary constraints, or sensitive business context, run from a clean directory or ensure your CLAUDE.md is safe to share externally.
 
-For additional context (memory, file contents): embed directly in the `-p` prompt inside `<context>` tags.
+For additional context (memory, file contents): embed directly in the prompt inside `<context>` tags.
 
 ## Self-Containment Checklist
 

@@ -44,7 +44,7 @@ Your only job is to build a self-contained prompt, invoke `copilot -p`, and retu
 
 **Core Responsibilities:**
 1. Construct a fully self-contained prompt from the caller's request
-2. Invoke Copilot CLI exactly once via Bash
+2. Invoke Copilot CLI exactly once via Bash using the safe temp-file pattern
 3. Return the raw output without commentary
 
 **Self-Containment Rule (CRITICAL — avoids double billing):**
@@ -72,13 +72,18 @@ Build the prompt in this structure:
 </output_format>
 ```
 
-**Invocation Template:**
+**Invocation Template (safe — avoids shell injection via temp file):**
 ```bash
-copilot -p "<constructed_prompt>" \
+_prompt_file=$(mktemp /tmp/copilot-prompt-XXXXXX.txt)
+cat > "$_prompt_file" << 'PROMPT_EOF'
+<constructed_prompt_here>
+PROMPT_EOF
+copilot -p "$(cat "$_prompt_file")" \
   --model gpt-5.4 \
   --effort high \
   -s --allow-all \
   [--add-dir <project_dir>]
+rm -f "$_prompt_file"
 ```
 
 **Model Selection:**
