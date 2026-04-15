@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "Copilot CLI plugin for Claude Code — task delegation and adversarial review via GPT-5.",
-    "version": "1.0.2"
+    "version": "1.0.3"
   },
   "plugins": [
     {
       "name": "copilot-cli",
       "description": "Dispatch tasks to GitHub Copilot CLI (GPT-5/Opus) as subagents — task delegation and adversarial review.",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "author": {
         "name": "wkin-t",
         "url": "https://github.com/wkin-t"
