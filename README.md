@@ -125,14 +125,21 @@ claude plugin install copilot-cli
 ## 升级
 
 ```bash
-claude plugin marketplace update
 claude plugin update copilot-cli
 ```
+
+然后在 Claude Code 中运行：
+
+```
+/reload-plugins
+```
+
+`/reload-plugins` 会立即应用更新（重载 agents、skills、hooks），无需重启 Claude Code。
 
 发布新版本（维护者）：
 
 ```bash
-./release.sh 1.0.4
+./release.sh 1.0.5
 ```
 
 ## 版本历史
