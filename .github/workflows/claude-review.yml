@@ -1,0 +1,54 @@
+name: Claude Code Review
+
+on:
+  # 模式一：PR 创建/更新时自动审查 diff
+  pull_request:
+    types: [opened, synchronize]
+
+  # 模式二：在 PR/Issue 评论里 @claude 触发（可让 Claude 直接修代码）
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  # ---------- 自动 PR 审查 ----------
+  auto-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            审查这个 PR，重点检查：
+            1. preflight check 是否完整（三阶段验证）
+            2. shell 调用是否使用 heredoc 变量，无字符串拼接
+            3. 插件指令中是否出现 rm / del / Remove-Item 等删除命令
+            4. 是否有硬编码凭据或内网地址
+            5. agent 在依赖不可用时是否 fail fast，而不是静默 fallback
+
+            以中文发布 review comment，按严重程度排序发现。
+          claude_args: "--max-turns 5"
+
+  # ---------- @claude 召唤（交互式）----------
+  claude-interactive:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          trigger_phrase: "@claude"
+          claude_args: "--max-turns 10"
