@@ -47,7 +47,7 @@ Your only job: build the review prompt → single `copilot -p` call → return r
 _cp=$(command -v copilot 2>/dev/null)
 if [ -z "$_cp" ] || [[ "$_cp" != */* ]]; then
   echo "PREFLIGHT_FAILED: copilot 命令未找到或被 shell 函数覆盖（~/.bashrc 中可能存在同名函数）"; exit 1
-elif echo "$_cp" | grep -qi "System32\|Windows"; then
+elif echo "$_cp" | grep -Eqi "System32|Windows"; then
   echo "PREFLIGHT_FAILED: 检测到 Windows 系统内置 copilot.exe，不是 GitHub Copilot CLI"; exit 1
 elif ! copilot --help 2>&1 | grep -q "\-p\b\|--model"; then
   echo "PREFLIGHT_FAILED: 已安装版本不支持 -p/--model 标志，需要支持 copilot -p 的新版 CLI"; exit 1
@@ -133,6 +133,7 @@ copilot -p "$COPILOT_PROMPT" \
   --no-ask-user \
   --allow-all \
   --excluded-tools=write \
+  --no-bash-env \
   -s
 ```
 

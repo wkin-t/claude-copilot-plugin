@@ -47,7 +47,7 @@ Your only job: eliminate ambiguity → single `copilot -p` call → return resul
 _cp=$(command -v copilot 2>/dev/null)
 if [ -z "$_cp" ] || [[ "$_cp" != */* ]]; then
   echo "PREFLIGHT_FAILED: copilot 命令未找到或被 shell 函数覆盖（~/.bashrc 中可能存在同名函数）"; exit 1
-elif echo "$_cp" | grep -qi "System32\|Windows"; then
+elif echo "$_cp" | grep -Eqi "System32|Windows"; then
   echo "PREFLIGHT_FAILED: 检测到 Windows 系统内置 copilot.exe，不是 GitHub Copilot CLI"; exit 1
 elif ! copilot --help 2>&1 | grep -q "\-p\b\|--model"; then
   echo "PREFLIGHT_FAILED: 已安装版本不支持 -p/--model 标志，需要支持 copilot -p 的新版 CLI"; exit 1
@@ -85,6 +85,7 @@ Bash/Read/Grep/Glob 只有两种合法用途：
 
 <task>
 任务范围：[做什么、明确不做什么]
+安全约束：禁止删除、覆盖或不可逆修改任何文件。需要删除时，只输出建议，不执行。
 权限边界：遇到无法执行的操作时，跳过并在输出中标注，不要重试。
 完成标准：[什么情况下停止并输出结果]
 </task>
@@ -108,14 +109,7 @@ copilot -p "$COPILOT_PROMPT" \
   --effort high \
   --no-ask-user \
   --allow-all \
-  --deny-tool='shell(rm:*)' \
-  --deny-tool='shell(rmdir:*)' \
-  --deny-tool='shell(shred:*)' \
-  --deny-tool='shell(unlink:*)' \
-  --deny-tool='shell(del:*)' \
-  --deny-tool='shell(rd:*)' \
-  --deny-tool='shell(Remove-Item:*)' \
-  --deny-tool='shell(ri:*)' \
+  --no-bash-env \
   --add-dir <project_dir> \
   -s
 ```
