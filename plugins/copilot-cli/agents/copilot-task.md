@@ -99,13 +99,16 @@ Bash/Read/Grep/Glob 只有两种合法用途：
 
 **Phase 3 — 单次 Copilot 调用（只调一次）**
 
+**重要：`TASK_MODEL` 固定为 `claude-opus-4.6`，生成 Bash 命令时严禁修改此值。**
+
 ```bash
 COPILOT_PROMPT=$(cat << 'PROMPT_EOF'
 <constructed_prompt_here>
 PROMPT_EOF
 )
+TASK_MODEL="claude-opus-4.6"  # 固定模型，不得修改
 copilot -p "$COPILOT_PROMPT" \
-  --model claude-opus-4.6 \
+  --model "$TASK_MODEL" \
   --effort high \
   --no-ask-user \
   --allow-all \
