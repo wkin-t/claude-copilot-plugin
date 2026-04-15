@@ -27,7 +27,18 @@ copilot -p "hello" --model gpt-5-mini -s --allow-all
 
 ## 安装
 
-### 1. 注册市场
+```bash
+# 第一步：注册市场（只需做一次）
+claude plugin marketplace add https://github.com/wkin-t/claude-copilot-plugin.git
+
+# 第二步：安装插件
+claude plugin install copilot-cli
+```
+
+重启 Claude Code 后生效。
+
+<details>
+<summary>手动方式（备用）</summary>
 
 编辑 `~/.claude/settings.json`，在 `extraKnownMarketplaces` 下添加：
 
@@ -42,13 +53,9 @@ copilot -p "hello" --model gpt-5-mini -s --allow-all
 }
 ```
 
-### 2. 安装插件
+然后执行 `/plugins install copilot-cli@copilot-cli-plugins`。
 
-在 Claude Code 中执行：
-
-```
-/plugins install copilot-cli@copilot-cli-plugins
-```
+</details>
 
 ## 组件
 
