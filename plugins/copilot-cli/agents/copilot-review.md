@@ -44,15 +44,24 @@ Your only job is to build the review prompt, invoke `copilot -p`, and return the
 
 **PREFLIGHT CHECK — Run this first, before anything else:**
 ```bash
-command -v copilot &>/dev/null
+_cp=$(command -v copilot 2>/dev/null)
+# 三重验证：存在 → 是真实二进制（非 shell 函数）→ 支持 -p/--model 标志
+if [ -z "$_cp" ] || [[ "$_cp" != */* ]]; then
+  _fail=1; _reason="copilot 命令未找到或被 shell 函数覆盖（~/.bashrc 中可能存在同名函数）"
+elif echo "$_cp" | grep -qi "System32\|Windows"; then
+  _fail=1; _reason="检测到 Windows 系统内置 copilot.exe，不是 GitHub Copilot CLI"
+elif ! copilot --help 2>&1 | grep -q "\-p\b\|--model"; then
+  _fail=1; _reason="已安装的 copilot 不支持 -p/--model 标志，可能是旧版（@githubnext/github-copilot-cli），需要支持 copilot -p 的新版 CLI"
+fi
 ```
-If the command is not found (exit code non-zero), immediately return this error to the caller — do NOT attempt the review yourself, do NOT fall back to Claude's own analysis:
+If `_fail=1`, immediately return this error — do NOT attempt the review yourself, do NOT fall back to Claude's own analysis:
 ```
-ERROR: copilot CLI not found in PATH.
+ERROR: copilot CLI 不可用。原因：$_reason
 无法执行对抗式审查。请告知用户：
-1. 确认 GitHub Copilot CLI 已安装（`npm install -g @githubnext/github-copilot-cli` 或参考官方文档）
-2. 确认 `copilot` 命令在当前 shell PATH 中可用
-3. 确认已通过 `copilot auth` 完成登录
+1. 确认安装的是支持 `copilot -p` 接口的 GitHub Copilot CLI
+2. 验证方式：copilot --help 应包含 -p / --model 选项
+3. 如 ~/.bashrc 中有同名 shell 函数，需先注释或移除
+4. 确认已通过 `copilot auth` 完成登录
 请询问用户希望如何处理后再继续。
 ```
 

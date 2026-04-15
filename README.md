@@ -12,18 +12,22 @@
 
 ## 前提条件
 
-安装并登录 GitHub Copilot CLI：
+安装并登录 **新版** GitHub Copilot CLI（需支持 `copilot -p` 接口）：
 
 ```bash
-npm install -g @githubnext/github-copilot-cli
+npm install -g @github/copilot-cli
 copilot auth
 ```
 
-验证安装：
+> **注意**：旧版包名 `@githubnext/github-copilot-cli`（2023 年版）**不支持** `-p`/`--model` 标志，请确认安装的是新版。
+
+验证安装（以下输出中应包含 `-p` / `--model` 选项）：
 
 ```bash
-copilot -p "hello" --model gpt-5-mini -s --allow-all
+copilot --help
 ```
+
+**常见问题**：如果 `~/.bashrc` 中存在 `copilot` 同名 shell 函数（如 `copilot () { /c/Windows/System32/copilot.exe ... }`），会导致插件检测失败。需先注释或移除该函数，再重启 shell。
 
 ## 安装
 
@@ -135,6 +139,7 @@ claude plugin update copilot-cli
 
 | 版本 | 变更 |
 |------|------|
+| 1.0.5 | 三阶段 preflight check：区分 Windows 内置 copilot.exe、shell 函数覆盖、旧版 CLI；修正安装文档 |
 | 1.0.4 | 添加发布脚本 release.sh；完善免责声明 |
 | 1.0.3 | 补全发布规范：README、LICENSE、plugin.json 完整元数据 |
 | 1.0.2 | Preflight check（copilot 不可用时 fail fast）；变量式调用避免 shell injection |
