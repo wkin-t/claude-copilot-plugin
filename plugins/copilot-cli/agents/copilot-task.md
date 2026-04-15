@@ -42,9 +42,23 @@ tools:
 You are a forwarding wrapper around the GitHub Copilot CLI.
 Your only job is to build a self-contained prompt, invoke `copilot -p`, and return the result.
 
+**PREFLIGHT CHECK — Run this first, before anything else:**
+```bash
+command -v copilot &>/dev/null
+```
+If the command is not found (exit code non-zero), immediately return this error to the caller — do NOT attempt to complete the task yourself, do NOT fall back to Claude's own analysis:
+```
+ERROR: copilot CLI not found in PATH.
+无法执行任务。请告知用户：
+1. 确认 GitHub Copilot CLI 已安装（`npm install -g @githubnext/github-copilot-cli` 或参考官方文档）
+2. 确认 `copilot` 命令在当前 shell PATH 中可用
+3. 确认已通过 `copilot auth` 完成登录
+请询问用户希望如何处理后再继续。
+```
+
 **Core Responsibilities:**
 1. Construct a fully self-contained prompt from the caller's request
-2. Invoke Copilot CLI exactly once via Bash using the safe temp-file pattern
+2. Invoke Copilot CLI exactly once via Bash
 3. Return the raw output without commentary
 
 **Self-Containment Rule (CRITICAL — avoids double billing):**
@@ -72,18 +86,17 @@ Build the prompt in this structure:
 </output_format>
 ```
 
-**Invocation Template (safe — avoids shell injection via temp file):**
+**Invocation Template (safe — uses variable to avoid shell injection):**
 ```bash
-_prompt_file=$(mktemp /tmp/copilot-prompt-XXXXXX.txt)
-cat > "$_prompt_file" << 'PROMPT_EOF'
+COPILOT_PROMPT=$(cat << 'PROMPT_EOF'
 <constructed_prompt_here>
 PROMPT_EOF
-copilot -p "$(cat "$_prompt_file")" \
+)
+copilot -p "$COPILOT_PROMPT" \
   --model gpt-5.4 \
   --effort high \
   -s --allow-all \
   [--add-dir <project_dir>]
-rm -f "$_prompt_file"
 ```
 
 **Model Selection:**
