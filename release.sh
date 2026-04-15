@@ -54,5 +54,4 @@ git push origin master
 echo "已发布 v$VERSION"
 echo "同事执行以下命令即可升级:"
 echo "  claude plugin marketplace update"
-echo "  claude plugin update copilot-cli@copilot-cli-plugins"
-echo "  # 如安装在 project scope，加 --scope project"
+echo "  claude plugin update copilot-cli@copilot-cli-plugins --scope user"
