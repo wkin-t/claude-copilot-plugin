@@ -10,7 +10,9 @@ Use this skill only inside `copilot-cli:copilot-task` and `copilot-cli:copilot-r
 
 ## Invocation Template
 
-Always use a temporary file to pass the prompt — this avoids shell injection when file contents are embedded:
+Always use a temporary file to pass the prompt — this avoids shell injection when file contents are embedded.
+
+Run the Bash call with `run_in_background: true`, then immediately use **Monitor** to stream the result. **Never use `sleep`, `until` loops, or output-file polling to wait for completion.**
 
 ```bash
 _prompt_file=$(mktemp /tmp/copilot-prompt-XXXXXX.txt)
@@ -25,6 +27,8 @@ copilot -p "$(cat "$_prompt_file")" \
   [--add-dir <working_dir>]
 rm -f "$_prompt_file"
 ```
+
+With `-s` (silent), copilot emits output only once at completion — Monitor fires exactly when the result is ready, with no wasted polling rounds.
 
 ## Required Flags
 
