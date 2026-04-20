@@ -35,13 +35,13 @@ rm -f "$_prompt_file"
 
 ## Model Routing
 
-| Model | When | Strengths |
-|-------|------|-----------|
-| `gpt-5.4` | **Default for all real tasks** | Edge cases, boundary conditions, error handling |
-| `claude-opus-4.6` | Caller requests design/architecture work | System design, architecture decisions |
+| Model | Used by | Strengths |
+|-------|---------|-----------|
+| `claude-opus-4.6` | `copilot-task` (fixed) | Context-heavy delegation, exploration, architecture |
+| `gpt-5.4` | `copilot-review` (fixed) | Edge cases, boundary conditions, adversarial review |
 | `gpt-5-mini` | **Debug only** — never for real tasks | Plugin testing |
 
-Default `--effort high` for all real tasks.
+Agents hard-code their model choice; do not override. Default `--effort high` for all real tasks.
 
 ## Context Injection
 

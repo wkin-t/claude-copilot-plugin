@@ -4,11 +4,11 @@
 
 ## 简介
 
-这个插件让 Claude Code 能够把任务委托给 [GitHub Copilot CLI](https://githubnext.com/projects/copilot-cli) 执行，由 GPT-5 系列模型完成分析，结果直接返回给主 agent。
+这个插件让 Claude Code 能够把任务委托给 [GitHub Copilot CLI](https://githubnext.com/projects/copilot-cli) 执行，由 Claude Opus 4.6 或 GPT-5.4 作为 subagent 完成分析，结果直接返回给主 agent。
 
 **适用场景：**
-- 上下文密集型任务（大量文件扫描、批量分析），需要节省 Claude 的上下文窗口
-- 对抗式代码审查，利用 GPT-5 的视角发现 Claude 可能忽略的边界条件
+- 上下文密集型任务（大量文件扫描、批量分析），交给 Copilot CLI（Claude Opus 4.6）独立跑，节省主 agent 的上下文窗口
+- 对抗式代码审查，利用 GPT-5.4 的视角发现 Claude 可能忽略的边界条件
 
 ## 前提条件
 
@@ -63,22 +63,22 @@ claude plugin install copilot-cli
 
 ## 组件
 
-| 组件 | 类型 | 触发方式 | 说明 |
-|------|------|----------|------|
-| `copilot-task` | Agent | 主 agent 调用 | 将上下文密集型任务委托给 GPT-5 |
-| `copilot-review` | Agent | 主 agent 调用 | 对抗式代码审查，GPT-5 扮演怀疑论审查员 |
-| `copilot-runtime` | Skill | 自动加载（不对用户开放） | 调用模板、模型路由、超时规范 |
+| 组件 | 类型 | 模型 | 触发方式 | 说明 |
+|------|------|------|----------|------|
+| `copilot-task` | Agent | `claude-opus-4.6` | 主 agent 调用 | 将上下文密集型任务委托给 Copilot CLI 子进程 |
+| `copilot-review` | Agent | `gpt-5.4` | 主 agent 调用 | 对抗式代码审查，GPT-5 扮演怀疑论审查员 |
+| `copilot-runtime` | Skill | — | 自动加载（不对用户开放） | 调用模板、模型路由、超时规范 |
 
 ### copilot-task
 
-将任务整理为自包含 prompt，调用一次 Copilot CLI，原样返回输出。适合：
+将任务整理为自包含 prompt，调用一次 Copilot CLI（Claude Opus 4.6），原样返回输出。适合：
 - 扫描 20+ 文件的模式检查
 - 边界条件分析
 - 大批量探索任务
 
 ### copilot-review
 
-对抗式审查：GPT-5 的默认立场是"找到这个变更不应该上线的理由"。适合：
+对抗式审查：由 GPT-5.4 担任审查员，默认立场是"找到这个变更不应该上线的理由"。适合：
 - 实现完成后的安全网审查
 - 支付/权限等高风险代码路径的二次确认
 
@@ -125,7 +125,8 @@ claude plugin install copilot-cli
 ## 升级
 
 ```bash
-claude plugin update copilot-cli
+claude plugin marketplace update
+claude plugin update copilot-cli@copilot-cli-plugins --scope user
 ```
 
 然后在 Claude Code 中运行：
@@ -146,6 +147,11 @@ claude plugin update copilot-cli
 
 | 版本 | 变更 |
 |------|------|
+| 1.0.10 | 维护发布（版本号同步） |
+| 1.0.9 | 维护发布（版本号同步） |
+| 1.0.8 | 维护发布（版本号同步） |
+| 1.0.7 | `release.sh` 升级命令修正：补全 marketplace 名与 `--scope user` |
+| 1.0.6 | 优化 agent 行为约束：`copilot-task` 固定使用 `claude-opus-4.6`，`copilot-review` 固定使用 `gpt-5.4`；强化 preflight 停止规则 |
 | 1.0.5 | 三阶段 preflight check：区分 Windows 内置 copilot.exe、shell 函数覆盖、旧版 CLI；修正安装文档 |
 | 1.0.4 | 添加发布脚本 release.sh；完善免责声明 |
 | 1.0.3 | 补全发布规范：README、LICENSE、plugin.json 完整元数据 |
