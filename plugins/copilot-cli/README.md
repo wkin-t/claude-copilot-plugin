@@ -1,23 +1,23 @@
 # copilot-cli
 
-Delegate tasks and adversarial code reviews to GitHub Copilot CLI (GPT-5) as Claude Code subagents.
+Delegate tasks and adversarial code reviews to GitHub Copilot CLI as Claude Code subagents, running either Claude Opus 4.6 or GPT-5.4 under the hood.
 
 ## Agents
 
-### `copilot-task`
+### `copilot-task` *(Claude Opus 4.6)*
 
-Dispatches self-contained tasks to GPT-5. The agent reads required files, embeds their content into a prompt, and invokes Copilot CLI once. Returns raw output without modification.
+Dispatches self-contained tasks to Copilot CLI backed by `claude-opus-4.6`. The agent preflights the CLI, builds a fully self-contained prompt, invokes `copilot -p` once, and returns the raw stdout unchanged.
 
 **Use when:**
-- Task requires scanning many files (saves Claude's context window)
-- You want a second opinion from a different model
+- Task requires scanning many files (saves the main agent's context window)
+- You want a second opinion from an isolated Copilot session
 - Batch exploration or edge-case analysis
 
 **Invoked by:** main agent via `Agent` tool with `subagent_type: "copilot-cli:copilot-task"`
 
-### `copilot-review`
+### `copilot-review` *(GPT-5.4)*
 
-Adversarial code reviewer. GPT-5's default stance is skeptical — it looks for reasons the change should NOT ship.
+Adversarial code reviewer backed by `gpt-5.4`. Default stance is skeptical — it looks for reasons the change should NOT ship.
 
 **Use when:**
 - Completing a feature before committing
@@ -32,7 +32,7 @@ Adversarial code reviewer. GPT-5's default stance is skeptical — it looks for 
 
 Not user-invocable. Loaded automatically inside `copilot-task` and `copilot-review` agents. Defines:
 - Invocation template (variable-based, no shell injection)
-- Model routing table (`gpt-5.4` default, `claude-opus-4.6` for architecture, `gpt-5-mini` for debug only)
+- Model routing defaults (`claude-opus-4.6` for task delegation, `gpt-5.4` for adversarial review, `gpt-5-mini` for debug only)
 - Timeout guidelines
 
 ## Dependencies
