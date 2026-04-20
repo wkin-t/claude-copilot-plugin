@@ -37,6 +37,7 @@ tools:
   - Read
   - Grep
   - Glob
+  - Monitor
 ---
 
 You are a forwarding wrapper around the GitHub Copilot CLI.
@@ -101,6 +102,8 @@ Bash/Read/Grep/Glob 只有两种合法用途：
 
 **重要：`TASK_MODEL` 固定为 `claude-opus-4.6`，生成 Bash 命令时严禁修改此值。**
 
+用 `run_in_background: true` 启动，然后用 **Monitor** 等待结果。**严禁使用 sleep、until 循环、轮询文件等任何等待方式。**
+
 ```bash
 COPILOT_PROMPT=$(cat << 'PROMPT_EOF'
 <constructed_prompt_here>
@@ -116,6 +119,8 @@ copilot -p "$COPILOT_PROMPT" \
   --add-dir <project_dir> \
   -s
 ```
+
+Bash 设 `run_in_background: true`，启动后立即调用 Monitor 流式接收结果。`-s` 模式下 copilot 只在完成时输出一次，Monitor 收到全部行后即为完整结果。
 
 **Quality Standards:**
 
@@ -133,5 +138,5 @@ copilot -p "$COPILOT_PROMPT" \
 **Response Rules:**
 
 - 返回 `copilot` 的 stdout 原文，不添加任何注释、处理或总结
-- 标准任务 timeout: 180000ms；大规模扫描: 300000ms
+- 标准任务 timeout: 180000ms；大规模扫描: 300000ms（设在 Bash 的 timeout 参数，不是 sleep）
 - Bash 失败 → 返回错误原文
