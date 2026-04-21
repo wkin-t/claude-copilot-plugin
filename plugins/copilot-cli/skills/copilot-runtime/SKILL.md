@@ -41,7 +41,7 @@ With `-s` (silent), copilot emits output only once at completion — Monitor fir
 
 | Model | Used by | Strengths |
 |-------|---------|-----------|
-| `claude-opus-4.6` | `copilot-task` (fixed) | Context-heavy delegation, exploration, architecture |
+| `claude-sonnet-4-6` | `copilot-task` (fixed) | Context-heavy delegation, exploration, architecture |
 | `gpt-5.4` | `copilot-review` (fixed) | Edge cases, boundary conditions, adversarial review |
 | `gpt-5-mini` | **Debug only** — never for real tasks | Plugin testing |
 
