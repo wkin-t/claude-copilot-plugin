@@ -4,10 +4,10 @@
 
 ## 简介
 
-这个插件让 Claude Code 能够把任务委托给 [GitHub Copilot CLI](https://githubnext.com/projects/copilot-cli) 执行，由 Claude Opus 4.6 或 GPT-5.4 作为 subagent 完成分析，结果直接返回给主 agent。
+这个插件让 Claude Code 能够把任务委托给 [GitHub Copilot CLI](https://githubnext.com/projects/copilot-cli) 执行，由 Claude Sonnet 4.6 或 GPT-5.4 作为 subagent 完成分析，结果直接返回给主 agent。
 
 **适用场景：**
-- 上下文密集型任务（大量文件扫描、批量分析），交给 Copilot CLI（Claude Opus 4.6）独立跑，节省主 agent 的上下文窗口
+- 上下文密集型任务（大量文件扫描、批量分析），交给 Copilot CLI（Claude Sonnet 4.6）独立跑，节省主 agent 的上下文窗口
 - 对抗式代码审查，利用 GPT-5.4 的视角发现 Claude 可能忽略的边界条件
 
 ## 前提条件
@@ -65,13 +65,13 @@ claude plugin install copilot-cli
 
 | 组件 | 类型 | 模型 | 触发方式 | 说明 |
 |------|------|------|----------|------|
-| `copilot-task` | Agent | `claude-opus-4.6` | 主 agent 调用 | 将上下文密集型任务委托给 Copilot CLI 子进程 |
+| `copilot-task` | Agent | `claude-sonnet-4-6` | 主 agent 调用 | 将上下文密集型任务委托给 Copilot CLI 子进程 |
 | `copilot-review` | Agent | `gpt-5.4` | 主 agent 调用 | 对抗式代码审查，GPT-5 扮演怀疑论审查员 |
 | `copilot-runtime` | Skill | — | 自动加载（不对用户开放） | 调用模板、模型路由、超时规范 |
 
 ### copilot-task
 
-将任务整理为自包含 prompt，调用一次 Copilot CLI（Claude Opus 4.6），原样返回输出。适合：
+将任务整理为自包含 prompt，调用一次 Copilot CLI（Claude Sonnet 4.6），原样返回输出。适合：
 - 扫描 20+ 文件的模式检查
 - 边界条件分析
 - 大批量探索任务
@@ -147,6 +147,8 @@ claude plugin update copilot-cli@copilot-cli-plugins --scope user
 
 | 版本 | 变更 |
 |------|------|
+| 1.0.12 | `copilot-task` 模型由 `claude-opus-4.6` 降级为 `claude-sonnet-4-6`（Pro 订阅不再提供 Opus 访问） |
+| 1.0.11 | 维护发布（版本号同步） |
 | 1.0.10 | 维护发布（版本号同步） |
 | 1.0.9 | 维护发布（版本号同步） |
 | 1.0.8 | 维护发布（版本号同步） |

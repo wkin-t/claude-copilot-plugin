@@ -1,7 +1,7 @@
 ---
 name: copilot-task
 description: >
-  Dispatch self-contained tasks to GitHub Copilot CLI (Claude Opus 4.6). Use for context-heavy but goal-clear work that would consume too much of Claude's context window — file scanning, edge-case analysis, boundary-condition review, batch exploration. Copilot charges per invocation so prompts must be fully self-contained and complete in one shot.
+  Dispatch self-contained tasks to GitHub Copilot CLI (Claude Sonnet 4.6). Use for context-heavy but goal-clear work that would consume too much of Claude's context window — file scanning, edge-case analysis, boundary-condition review, batch exploration. Copilot charges per invocation so prompts must be fully self-contained and complete in one shot.
 
   <example>
   Context: Claude is working on a large project and needs to scan 20+ files for a specific pattern.
@@ -15,7 +15,7 @@ description: >
   <example>
   Context: Claude wants a second opinion on edge cases in a piece of code.
   user: "帮我分析一下这段代码的边界条件"
-  assistant: "我让 Copilot 从 Opus 的角度分析边界条件，GPT 特别擅长这类工作。"
+  assistant: "我让 Copilot 从 Sonnet 的角度分析边界条件，GPT 特别擅长这类工作。"
   <commentary>
   GPT-5 excels at catching boundary conditions and error handling gaps — complementary to Claude's strengths.
   </commentary>
@@ -100,7 +100,7 @@ Bash/Read/Grep/Glob 只有两种合法用途：
 
 **Phase 3 — 单次 Copilot 调用（只调一次）**
 
-**重要：`TASK_MODEL` 固定为 `claude-opus-4.6`，生成 Bash 命令时严禁修改此值。**
+**重要：`TASK_MODEL` 固定为 `claude-sonnet-4-6`，生成 Bash 命令时严禁修改此值。**
 
 用 `run_in_background: true` 启动，然后用 **Monitor** 等待结果。**严禁使用 sleep、until 循环、轮询文件等任何等待方式。**
 
@@ -109,7 +109,7 @@ COPILOT_PROMPT=$(cat << 'PROMPT_EOF'
 <constructed_prompt_here>
 PROMPT_EOF
 )
-TASK_MODEL="claude-opus-4.6"  # 固定模型，不得修改
+TASK_MODEL="claude-sonnet-4-6"  # 固定模型，不得修改
 copilot -p "$COPILOT_PROMPT" \
   --model "$TASK_MODEL" \
   --effort high \
